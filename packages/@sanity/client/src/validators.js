@@ -16,8 +16,17 @@ exports.projectId = id => {
 }
 
 exports.validateAssetType = type => {
+  const VALID_ASSET_TYPES_LIST = VALID_ASSET_TYPES.join(', ')
+  if (!type) {
+    const errorMessage = `
+      Asset type is not specified.
+      Have you remebered prefixing your import string with <type>@?
+      These types are valid: ${VALID_ASSET_TYPES_LIST}
+    `
+    throw new Error(errorMessage)
+  }
   if (VALID_ASSET_TYPES.indexOf(type) === -1) {
-    throw new Error(`Invalid asset type: ${type}. Must be one of ${VALID_ASSET_TYPES.join(', ')}`)
+    throw new Error(`Invalid asset type: ${type}. Must be one of ${VALID_ASSET_TYPES_LIST}`)
   }
 }
 
