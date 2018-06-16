@@ -34,12 +34,14 @@ function absolutifyPaths(doc, absPath) {
 }
 
 function getAssetRefs(doc) {
-  return findAssetRefs(doc).map(path => ({
-    documentId: doc._id,
-    path: serializePath({path: path.filter(isNotAssetKey)}),
-    url: get(doc, path).replace(assetMatcher, '$2'),
-    type: get(doc, path).replace(assetMatcher, '$1')
-  }))
+  return findAssetRefs(doc)
+    .map(validateAssetImportKey)
+    .map(path => ({
+      documentId: doc._id,
+      path: serializePath({path: path.filter(isNotAssetKey)}),
+      url: get(doc, path).replace(assetMatcher, '$2'),
+      type: get(doc, path).replace(assetMatcher, '$1')
+    }))
 }
 
 function isNotAssetKey(segment) {
@@ -50,6 +52,16 @@ function findAssetRefs(doc) {
   return extractWithPath(`..[${assetKey}]`, doc).map(match => match.path)
 }
 
+function validateAssetImportKey(path) {
+  if (!assetMatcher.test(path)) {
+    const errorMessage = `Asset type is not specified.
+      Have you remebered prefixing your import string with <type>@? These types are valid: file, image`
+    throw new Error(errorMessage)
+  }
+  return path
+}
+
 exports.getAssetRefs = getAssetRefs
 exports.unsetAssetRefs = unsetAssetRefs
 exports.absolutifyPaths = absolutifyPaths
+exports.validateAssetImportKey = validateAssetImportKey
