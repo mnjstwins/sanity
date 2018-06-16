@@ -95,7 +95,8 @@ test('rejects on missing asset type prefix', async () => {
   const docs = getFixtureArray('missing-asset-type')
   await expect(importer(docs, importOptions)).rejects.toHaveProperty(
     'message',
-    'Asset type is not specified. Have you remebered prefixing your import string with <type>@? These types are valid: file, image'
+    `Asset type is not specified.
+      Have you remebered prefixing your import string with <type>@? These types are valid: file, image`
   )
 })
 
